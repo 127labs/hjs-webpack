@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/hjs-webpack.svg)](https://badge.fury.io/js/hjs-webpack)
 
-> Warning: If you are upgrading from version `6.0.0` or less, please read the [upgrade guide for v7](./CHANGELOG.md#700).
+> Warning: If you are upgrading across major versions, please read the [release notes in the changelog](./CHANGELOG.md).
 
 I really dislike setting up build scripts. Most of the time I want to do the exact same thing:
 
@@ -395,6 +395,31 @@ Your `html` function will be called with a context object that contains the foll
 By default, if you supply an `html` function it will always be used, whether you're in development mode or not.
 
 Set this option to `false` to only use your `html` function when building for production. Note, that `.isDev` is attached to the context object passed to the `html` function as described above, so alternately you could just use that value to branch your logic within that function. Using this option circumvents the custom `html` function entirely during development.
+
+## Proxy
+
+The dev server uses [http-proxy-middleware](https://www.npmjs.com/package/http-proxy-middleware) to optionally proxy requests to a separate, possibly external, backend server. Proxies can be specified with `devServer.proxy`. This can be a single proxy, or an array of proxies. The proxy context and options are passed directly to `http-proxy-middleware`.
+
+```js
+getConfig({
+  in: 'src/app.js',
+  out: 'public',
+  clearBeforeBuild: true,
+
+  // Use devServer.proxy to specify proxies
+  devServer: {
+    proxy: {
+      context: "/api",
+      options: {
+        target: "http://localhost:3001",
+        pathRewrite: {
+          "^/api": ""
+        }
+      }
+    }
+  }
+})
+```
 
 ## Developing on multiple devices at once
 
